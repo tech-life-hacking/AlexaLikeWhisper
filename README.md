@@ -1,6 +1,7 @@
 # AlexaLikeWhisper
 Implement of audio speech recognition "Whisper" released by OpenAI triggered on Wakeup word detection
 
+The detail is [my articles](https://www.techlife-hacking.com/?p=1627).
 # Demo
 ![AlexaLikeWhisper](https://www.techlife-hacking.com/wp-content/uploads/2022/10/whisper.gif)  
 After detected wakeup words, whisper recognizes audio speech like Alexa!  
