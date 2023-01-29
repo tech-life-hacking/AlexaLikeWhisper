@@ -45,17 +45,15 @@ And download a model file(.ppn) and place it in AlexaLikeWhisper/model.
 
 # Usage
 ```
-# get source of alexa like whisper
+# get source of alexa like whisper and install alexa_like_whisper
 git clone https://github.com/tech-life-hacking/AlexaLikeWhisper.git
+cd AlexaLikeWhisper
+pip install -e .
 ```
 Place a model file(.ppn) in AlexaLikeWhisper/model.  
 
 ```python
-import os
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), 'AlexaLikeWhisper'))
-import scripts.alexa_like_whisper as alexa_like_whisper
+import alexa_like_whisper
 
 if __name__ == "__main__":
     # Modelsizes on whisper
