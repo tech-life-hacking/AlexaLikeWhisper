@@ -1,6 +1,6 @@
-import scripts.hotword_detection as hotword_detection
-import scripts.input as input
-import scripts.recognition as recognition
+from . import hotword_detection
+from . import input
+from . import recognition
 
 import struct
 import numpy as np

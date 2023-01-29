@@ -1,4 +1,4 @@
-import scripts.strategy as strategy
+from . import strategy
 import time
 
 class AlexaLikeWhisper():
