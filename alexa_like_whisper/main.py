@@ -1,5 +1,4 @@
 from . import strategy
-import time
 
 class AlexaLikeWhisper():
     def __init__(self, access_key, keyword_path, modelsize, recoding_time=3):
