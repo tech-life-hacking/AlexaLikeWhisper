@@ -1,28 +1,45 @@
 # AlexaLikeWhisper
+
 Implement of audio speech recognition "Whisper" released by OpenAI triggered on Wakeup word detection
 
 The detail is [my articles](https://www.techlife-hacking.com/?p=1627).
+
 # Demo
+
 ![AlexaLikeWhisper](https://www.techlife-hacking.com/wp-content/uploads/2022/10/whisper.gif)  
 After detected wakeup words, whisper recognizes audio speech like Alexa!  
-Using recognized words, you can control avatar robots or IoT...etc!  
+Using recognized words, you can control avatar robots or IoT...etc!
 
 # System
+
 ![System](https://www.techlife-hacking.com/wp-content/uploads/2022/10/whisper_en.png)  
 Users : Say wakeup words like "Hey, Siri" and some speech  
 PC : Input audio speech with a microphone and recognize it with whisper  
-IoT : Using recognized words, do tasks  
-
+IoT : Using recognized words, do tasks
 
 # PC Spec
+
 OS : Ubuntu 20.04  
-GPU : Geforce RTX 2080Ti  
+GPU : Geforce RTX 2080Ti
+
 # Setup
+
 ## PC
-### Install build dependencies
+
+### Install Whisper
+
+#### Using API
+
+```
+# install openai
+pip install openai
+```
+
+#### Install Whisper when not using API
+
 install pytorch  
 Install Pytorch with matching GPU, CUDA and cuDNN versions.  
-[Pytorch](https://www.techlife-hacking.com/?p=1325)  
+[Pytorch](https://www.techlife-hacking.com/?p=1325)
 
 ```
 # install transformers
@@ -31,7 +48,11 @@ pip install transformers
 # install whisper
 sudo apt update && sudo apt install ffmpeg
 pip install git+https://github.com/openai/whisper.git
+```
 
+### Install other packages
+
+```
 # install pyaudio
 sudo apt-get install portaudio19-dev
 pip install pyaudio
@@ -41,16 +62,18 @@ pip install pvporcupine
 ```
 
 To use pvporcupine, you need to register to [PICOVOICE](https://console.picovoice.ai/) and get a API Key.  
-And download a model file(.ppn) and place it in AlexaLikeWhisper/model.  
+And download a model file(.ppn) and place it in AlexaLikeWhisper/model.
 
 # Usage
+
 ```
 # get source of alexa like whisper and install alexa_like_whisper
 git clone https://github.com/tech-life-hacking/AlexaLikeWhisper.git
 cd AlexaLikeWhisper
 pip install -e .
 ```
-Place a model file(.ppn) in AlexaLikeWhisper/model.  
+
+Place a model file(.ppn) in AlexaLikeWhisper/model.
 
 ```python
 import alexa_like_whisper
@@ -66,7 +89,13 @@ if __name__ == "__main__":
     # Recording Time(s)
     RECORDING_TIME = 3
 
-    alexa_like = alexa_like_whisper.AlexaLikeWhisper(ACCESS_KEY, KEYWORD_PATH, MODELSIZES[3], RECORDING_TIME)
+    # if using API, set True
+    WHISPER_API = True
+
+    # if using API, set API Key or "export OPENAI_API_KEY='YOUR_API_KEY'"
+    openai.api_key = "YOUR_API_KEY"
+
+    alexa_like = alexa_like_whisper.AlexaLikeWhisper(ACCESS_KEY, KEYWORD_PATH, MODELSIZES[3], RECORDING_TIME, WHISPER_API)
 
     while True:
         result = alexa_like.run()
@@ -74,7 +103,8 @@ if __name__ == "__main__":
 
 ```
 
-result shows  
+result shows
+
 - Waiting wakeup words : "Sleep"
 - After detected wakeup words and on recording : "On recording..."
 - When recognizing audio speech : the result

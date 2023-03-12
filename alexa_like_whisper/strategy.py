@@ -7,10 +7,9 @@ import numpy as np
 import scipy.io.wavfile
 from abc import ABCMeta, abstractmethod
 
-import torch
-
 WHISPER_RATE = 44100
 WHISPER_FRAME_LENGTH = 1024
+
 
 class Strategy(metaclass=ABCMeta):
     @abstractmethod
@@ -21,17 +20,21 @@ class Strategy(metaclass=ABCMeta):
     def recognize(self):
         pass
 
+
 class WaitWakeupWord():
     def __init__(self, access_key, keyword_path):
-        self.wakeup = hotword_detection.WakeupWordDetection(access_key, keyword_path)
+        self.wakeup = hotword_detection.WakeupWordDetection(
+            access_key, keyword_path)
         self.mike = input.Microphone()
 
     def initialize(self):
-        self.mike.initialize(self.wakeup.handle.sample_rate, input.pyaudio.paInt16, self.wakeup.handle.frame_length)
+        self.mike.initialize(self.wakeup.handle.sample_rate,
+                             input.pyaudio.paInt16, self.wakeup.handle.frame_length)
 
     def read(self):
         audio = self.mike.read(self.wakeup.handle.frame_length)
-        self.pcm = struct.unpack_from("h" * self.wakeup.handle.frame_length, audio)
+        self.pcm = struct.unpack_from(
+            "h" * self.wakeup.handle.frame_length, audio)
 
     def recognize(self):
         result = self.wakeup.handle.process(self.pcm)
@@ -40,18 +43,25 @@ class WaitWakeupWord():
         else:
             return False, "Sleep"
 
+
 class WakeupWordDetected():
-    def __init__(self, modelsize, recoding_time):
+    def __init__(self, modelsize, recoding_time, whisper_api):
         self.frames = []
         self.counter = 0
         self.mike = input.Microphone()
-        self.whis = recognition.Whisper(modelsize)
-        self.recoding_time = int(WHISPER_RATE*recoding_time/WHISPER_FRAME_LENGTH)
+        if whisper_api:
+            self.whis = recognition.AudioRecognizer(recognition.WhisperAPI())
+        else:
+            self.whis = recognition.AudioRecognizer(
+                recognition.Whisper(modelsize))
+        self.recoding_time = int(
+            WHISPER_RATE*recoding_time/WHISPER_FRAME_LENGTH)
 
     def initialize(self):
         self.frames = []
         self.counter = 0
-        self.mike.initialize(WHISPER_RATE, input.pyaudio.paFloat32, WHISPER_FRAME_LENGTH)
+        self.mike.initialize(
+            WHISPER_RATE, input.pyaudio.paFloat32, WHISPER_FRAME_LENGTH)
 
     def read(self):
         self.counter += 1
@@ -67,10 +77,12 @@ class WakeupWordDetected():
         else:
             return False, "On recording..."
 
+
 class Recognizer:
-    def __init__(self, access_key, keyword_path, modelsize, recoding_time):
+    def __init__(self, access_key, keyword_path, modelsize, recoding_time, whisper_api):
         self.wakeup_word_detection = WaitWakeupWord(access_key, keyword_path)
-        self.whisper = WakeupWordDetected(modelsize, recoding_time)
+        self.whisper = WakeupWordDetected(
+            modelsize, recoding_time, whisper_api)
         self.strategy = self.wakeup_word_detection
 
     def change_recognizer(self, recognizer):

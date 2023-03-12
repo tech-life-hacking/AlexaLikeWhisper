@@ -1,9 +1,11 @@
 from . import strategy
 
+
 class AlexaLikeWhisper():
-    def __init__(self, access_key, keyword_path, modelsize, recoding_time=3):
+    def __init__(self, access_key, keyword_path, modelsize, recoding_time=3, whisper_api=True):
         # initialize
-        self.context = strategy.Recognizer(access_key, keyword_path, modelsize, recoding_time)
+        self.context = strategy.Recognizer(
+            access_key, keyword_path, modelsize, recoding_time, whisper_api)
         self.context.initialize()
 
     def run(self):
